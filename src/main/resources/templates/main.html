@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>메인 페이지</title>
+</head>
+<body>
+ <h1>메인 페이지</h1>
+ <p th:if="${nickname != null}"
+    th:text="|안녕하세요. ${nickname}님!|">
+ </p>
+ <a href="/logout">로그아웃</a>
+</body>
+</html>
