@@ -4,6 +4,7 @@ import com.example.demo.user.domain.User;
 import com.example.demo.user.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +20,7 @@ import java.util.Optional;
 public class UserController {
 
     private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
 
     private static final String LOGIN_USER = "LOGIN_USER";
 
@@ -47,34 +49,4 @@ public class UserController {
         return "user/login";
     }
 
-    // 로그인 (사용자 입력 데이터)
-    @PostMapping("/login")
-    public String doLogin(@RequestParam String username,
-                          @RequestParam String password,
-                          HttpSession session,
-                          Model model) {
-        Optional<User> optionalUser = userService.getUser(username);
-        if(optionalUser.isEmpty()) {
-            model.addAttribute("error","존재하지 않는 아이디입니다.");
-            return "user/login";
-        }
-
-        User user = optionalUser.get();
-
-        if(!user.getPassword().equals(password)) {
-            model.addAttribute("error","비밀번호가 올바르지 않습니다.");
-            return "user/login";
-        }
-
-        session.setAttribute(LOGIN_USER, user.getId());
-        session.setAttribute("LOGIN_NICKNAME", user.getNickname());
-
-        return "redirect:/";
-    }
-
-    @GetMapping("/logout")
-    public String logout(HttpSession session) {
-        session.invalidate();
-        return "redirect:/";
-    }
 }

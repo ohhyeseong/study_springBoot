@@ -22,14 +22,31 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .httpBasic(httpBasic -> httpBasic.disable())
-                .formLogin(form -> form.disable())
-                .logout(logout -> logout.disable())
+
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .loginProcessingUrl("/login")
+                        .usernameParameter("username")
+                        .passwordParameter("password")
+                        .defaultSuccessUrl("/",true)
+                        .permitAll()
+                )
+
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/")
+                        .invalidateHttpSession(true)
+                        .clearAuthentication(true)
+                        .deleteCookies("JSESSIONID")
+                        .permitAll()
+                )
 
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/","/signup","/login","/logout",
                                 "/css/**","/js/**","/images/**","/webjars/**"
                         ).permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 );
         return http.build();

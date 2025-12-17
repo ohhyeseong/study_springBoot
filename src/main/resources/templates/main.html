@@ -1,14 +1,34 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>메인 페이지</title>
 </head>
 <body>
  <h1>메인 페이지</h1>
- <p th:if="${nickname != null}"
-    th:text="|안녕하세요. ${nickname}님!|">
- </p>
- <a href="/logout">로그아웃</a>
+ <header>
+    <nav>
+        <a sec:authorize="isAnonymous()" href="/login">로그인</a>
+        <a sec:authorize="isAnonymous()" href="/signup">회원가입</a>
+
+        <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post">
+            <button type="submit">로그아웃</button>
+        </form>
+    </nav>
+ </header>
+<section sec:authorize="isAnonymous()">
+    <h2>환영합니다.</h2>
+    <p>로그인을 하면 게시판 기능을 사용할 수 있습니다.</p>
+</section>
+<section sec:authorize="isAuthenticated()">
+    <h2>
+        <span th:text="${#authentication.principal.nickname}">닉네임</span>님, 환영합니다!
+    </h2>
+    <p>
+        아이디: <strong sec:authentication="name">username</strong><br>
+        사용자 번호: <span th:text="${#authentication.principal.id}">1</span>
+    </p>
+</section>
 </body>
 </html>

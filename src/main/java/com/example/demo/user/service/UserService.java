@@ -5,6 +5,7 @@ import com.example.demo.user.domain.UserRole;
 import com.example.demo.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -15,6 +16,7 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public User register(String username, String password, String nickname) {
         if (isBlank(username)) throw new IllegalArgumentException("아이디는 필수입니다.");
@@ -23,9 +25,11 @@ public class UserService {
 
         if (userRepository.existsByUsername(username)) throw new IllegalArgumentException("아이디가 이미 존재합니다.");
 
+        String encodedPassword = passwordEncoder.encode(password);
+
         User user = User.builder()
                 .username(username)
-                .password(password)
+                .password(encodedPassword)
                 .nickname(nickname)
                 .role(UserRole.USER)
                 .build();
