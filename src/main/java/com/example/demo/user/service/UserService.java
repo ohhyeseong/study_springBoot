@@ -3,10 +3,10 @@ package com.example.demo.user.service;
 import com.example.demo.user.domain.User;
 import com.example.demo.user.domain.UserRole;
 import com.example.demo.user.repository.UserRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -19,9 +19,6 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     public User register(String username, String password, String nickname) {
-        if (isBlank(username)) throw new IllegalArgumentException("아이디는 필수입니다.");
-        if (isBlank(password)) throw new IllegalArgumentException("비밀번호는 필수입니다.");
-        if (isBlank(nickname)) throw new IllegalArgumentException("닉네임은 필수입니다.");
 
         if (userRepository.existsByUsername(username)) throw new IllegalArgumentException("아이디가 이미 존재합니다.");
 
@@ -38,13 +35,10 @@ public class UserService {
     }
 
     // 사용자 로그인을 위한 아이디 있는지 확인 메서드
+    @Transactional(readOnly = true)// 이 메서드는 get(조회)메서드라 spring에게 알려준다.
     public Optional<User> getUser(String username) {
         return userRepository.findByUsername(username);
     }
-
-
-
-    private boolean isBlank(String s){
-        return s == null || s.trim().isEmpty();
-    }
+    // 그럼 쓸데없이 transactional이 스냅샷을 만들어 변경감지를 하고 update 쿼리를 생성을 안하기 때문에
+    // 성능이 더 좋아진다.
 }
