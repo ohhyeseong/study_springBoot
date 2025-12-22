@@ -12,7 +12,7 @@
         <a sec:authorize="isAnonymous()" th:href="@{/user/login}">로그인</a>
         <a sec:authorize="isAnonymous()" th:href="@{/user/signup}">회원가입</a>
 
-        <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post">
+        <form sec:authorize="isAuthenticated()" th:action="@{user/logout}" method="post">
             <button type="submit">로그아웃</button>
         </form>
     </nav>

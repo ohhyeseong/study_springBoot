@@ -1,6 +1,7 @@
 package com.example.demo.user.controller;
 
 import com.example.demo.user.domain.User;
+import com.example.demo.user.dto.UserLoginDto;
 import com.example.demo.user.dto.UserSignupDto;
 import com.example.demo.user.service.UserService;
 import jakarta.servlet.http.HttpSession;
@@ -57,7 +58,8 @@ public class UserController {
 
     // 로그인 화면 표시
     @GetMapping("/login")
-    public String showLogin() {
+    public String showLogin(Model model) {
+        model.addAttribute("userLoginDto", new UserLoginDto("",""));
         return "user/login";
     }
 
